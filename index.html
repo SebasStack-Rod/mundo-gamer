@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sala de Juegos</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fondo:#E8E6F4;
+  --papel:#FFFFFF;
+  --tinta:#221D44;
+  --tinta-suave:#5B5680;
+  --linea:#CFCBE6;
+  --acento:#FF5C8A;
+  --estrella:#FFB400;
+  --ok:#1E9E6A;
+  --radio:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --fondo:#1B1838;
+    --papel:#272352;
+    --tinta:#F1EFFF;
+    --tinta-suave:#B3AEDB;
+    --linea:#3C376F;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:'Outfit',system-ui,sans-serif;
+  background:var(--fondo);
+  color:var(--tinta);
+  line-height:1.5;
+  padding-bottom:60px;
+}
+a{color:inherit}
+.contenedor{max-width:980px;margin:0 auto;padding:0 18px}
+
+/* Cabecera */
+header{padding:34px 0 18px}
+.marca{display:flex;align-items:center;gap:14px}
+.marca svg{width:62px;height:62px;flex:none}
+h1{
+  font-family:'Bungee',sans-serif;
+  font-weight:400;
+  font-size:clamp(2rem,7vw,3.4rem);
+  line-height:1;
+  margin:0;
+  letter-spacing:.5px;
+}
+.bajada{margin:14px 0 0;color:var(--tinta-suave);font-size:1.05rem;max-width:46ch}
+
+/* Cartuchos */
+.grilla{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:22px;
+  margin-top:26px;
+}
+.cartucho{
+  display:flex;flex-direction:column;
+  text-decoration:none;
+  background:var(--papel);
+  border:2px solid var(--tinta);
+  border-radius:6px 6px var(--radio) var(--radio);
+  overflow:hidden;
+  box-shadow:5px 5px 0 var(--tinta);
+  transition:transform .15s ease, box-shadow .15s ease;
+  position:relative;
+}
+.cartucho:hover,.cartucho:focus-visible{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--tinta)}
+.cartucho:focus-visible{outline:3px solid var(--acento);outline-offset:3px}
+.cartucho .pantalla{
+  height:132px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:3.6rem;
+  border-bottom:2px solid var(--tinta);
+  position:relative;
+}
+.cartucho .pantalla img{width:100%;height:100%;object-fit:cover;display:block}
+.cartucho .ranura{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:70px;height:9px;background:var(--tinta);
+  border-radius:0 0 8px 8px;
+}
+.cartucho .cuerpo{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.cartucho h2{font-family:'Bungee',sans-serif;font-weight:400;font-size:1.15rem;margin:0;line-height:1.15}
+.cartucho p{margin:0;color:var(--tinta-suave);font-size:.95rem;flex:1}
+.cartucho .nota{display:flex;align-items:center;justify-content:space-between;margin-top:8px;font-size:.9rem}
+.cartucho .jugar{
+  background:var(--tinta);color:var(--fondo);
+  padding:6px 14px;border-radius:99px;font-weight:700;
+}
+.promedio{color:var(--tinta-suave)}
+.promedio b{color:var(--estrella)}
+
+/* Comentarios */
+#opiniones{margin-top:58px}
+h2.seccion{font-family:'Bungee',sans-serif;font-weight:400;font-size:1.8rem;margin:0 0 6px}
+.sub{color:var(--tinta-suave);margin:0 0 20px}
+.bloque{
+  background:var(--papel);
+  border:2px solid var(--tinta);
+  border-radius:var(--radio);
+  padding:20px;
+}
+.campo{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+label,.etiqueta{font-weight:700;font-size:.95rem}
+select,input[type=text],textarea{
+  font:inherit;color:var(--tinta);background:var(--fondo);
+  border:2px solid var(--linea);border-radius:10px;padding:10px 12px;width:100%;
+}
+select:focus,input:focus,textarea:focus{outline:3px solid var(--acento);outline-offset:1px;border-color:var(--tinta)}
+textarea{min-height:110px;resize:vertical}
+.estrellas{display:flex;gap:4px}
+.estrellas button{
+  background:none;border:0;cursor:pointer;padding:2px;
+  font-size:2.2rem;line-height:1;color:var(--linea);
+}
+.estrellas button.on{color:var(--estrella)}
+.estrellas button:focus-visible{outline:3px solid var(--acento);border-radius:8px}
+.enviar{
+  font:inherit;font-weight:700;cursor:pointer;
+  background:var(--acento);color:#fff;
+  border:2px solid var(--tinta);border-radius:99px;
+  padding:11px 26px;box-shadow:3px 3px 0 var(--tinta);
+}
+.enviar:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--tinta)}
+.enviar:disabled{opacity:.6;cursor:wait}
+.aviso{margin:12px 0 0;font-size:.92rem;min-height:1.3em}
+.aviso.ok{color:var(--ok)}
+.aviso.mal{color:#D93A3A}
+.modo-local{
+  background:var(--fondo);border:2px dashed var(--linea);border-radius:10px;
+  padding:10px 14px;font-size:.88rem;color:var(--tinta-suave);margin-bottom:16px;
+}
+
+.filtro{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:34px 0 14px}
+.filtro select{width:auto;min-width:200px}
+.resumen{color:var(--tinta-suave)}
+.lista{display:flex;flex-direction:column;gap:14px}
+.comentario{background:var(--papel);border:2px solid var(--linea);border-radius:var(--radio);padding:14px 16px}
+.comentario .cab{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;font-size:.92rem}
+.comentario .cab b{font-size:1rem}
+.comentario .est{color:var(--estrella);letter-spacing:2px}
+.comentario .juego{color:var(--tinta-suave)}
+.comentario p{margin:8px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.vacio{padding:26px;text-align:center;color:var(--tinta-suave);border:2px dashed var(--linea);border-radius:var(--radio)}
+
+footer{margin-top:50px;text-align:center;color:var(--tinta-suave);font-size:.9rem}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<header class="contenedor">
+  <div class="marca">
+    <!-- Logo: control de juego. Si tenés un logo propio, reemplazá este <svg> por <img src="logo.png" width="62" height="62" alt="Logo"> -->
+    <svg viewBox="0 0 64 64" role="img" aria-label="Logo de la Sala de Juegos">
+      <rect x="3" y="14" width="58" height="36" rx="16" fill="#FF5C8A" stroke="#221D44" stroke-width="3"/>
+      <rect x="15" y="26" width="16" height="6" rx="2" fill="#221D44"/>
+      <rect x="20" y="21" width="6" height="16" rx="2" fill="#221D44"/>
+      <circle cx="42" cy="34" r="4" fill="#FFB400" stroke="#221D44" stroke-width="2"/>
+      <circle cx="50" cy="27" r="4" fill="#FFFFFF" stroke="#221D44" stroke-width="2"/>
+    </svg>
+    <h1 id="titulo-sitio">Sala de Juegos</h1>
+  </div>
+  <p class="bajada">Elegí un juego y jugá. Cuando termines, volvé acá y dejá tus estrellas y tu opinión.</p>
+</header>
+
+<main class="contenedor">
+  <section aria-label="Juegos">
+    <div class="grilla" id="grilla"></div>
+  </section>
+
+  <section id="opiniones" aria-labelledby="t-opiniones">
+    <h2 class="seccion" id="t-opiniones">¿Qué tal estuvo?</h2>
+    <p class="sub">Poné las estrellas que le das, y contá qué mejorarías o qué te pareció.</p>
+
+    <div class="bloque">
+      <div class="modo-local" id="modoLocal" hidden>
+        Los comentarios todavía no están conectados a una base de datos online, así que se guardan solo en este dispositivo. Mirá las instrucciones al principio del script para conectarlos.
+      </div>
+
+      <div class="campo">
+        <label for="selJuego">Juego</label>
+        <select id="selJuego"></select>
+      </div>
+
+      <div class="campo">
+        <span class="etiqueta" id="et-estrellas">Calificación</span>
+        <div class="estrellas" id="estrellas" role="radiogroup" aria-labelledby="et-estrellas"></div>
+      </div>
+
+      <div class="campo">
+        <label for="nombre">Tu nombre (opcional)</label>
+        <input type="text" id="nombre" maxlength="40" placeholder="Anónimo" autocomplete="nickname">
+      </div>
+
+      <div class="campo">
+        <label for="texto">Comentario</label>
+        <textarea id="texto" maxlength="600" placeholder="Qué te gustó, qué mejorarías, algún error que encontraste..."></textarea>
+      </div>
+
+      <button class="enviar" id="btnEnviar" type="button">Publicar opinión</button>
+      <p class="aviso" id="aviso" role="status" aria-live="polite"></p>
+    </div>
+
+    <div class="filtro">
+      <label for="selFiltro">Ver opiniones de</label>
+      <select id="selFiltro"></select>
+      <span class="resumen" id="resumen"></span>
+    </div>
+    <div class="lista" id="lista"></div>
+  </section>
+</main>
+
+<footer class="contenedor">
+  <p>Hecho por Sebastián. Los juegos están alojados en GitHub.</p>
+</footer>
+
+<script>
+/* =====================================================================
+   1) EDITÁ ESTO: tus juegos
+   - nombre: título que se ve en la tarjeta
+   - descripcion: una línea corta
+   - link: dirección del juego (normalmente https://TU-USUARIO.github.io/NOMBRE-REPO/
+           o la del repositorio https://github.com/TU-USUARIO/NOMBRE-REPO)
+   - logo: ruta a una imagen (ej: "img/bola.png"). Si la dejás vacía se usa el emoji.
+   - emoji y color: se usan cuando no hay logo
+   ===================================================================== */
+const JUEGOS = [
+  { id:"bola-vs-bola", nombre:"Bola vs Bola", descripcion:"Duelo de 2 jugadores con física, desde el celular.",
+    link:"https://TU-USUARIO.github.io/bola-vs-bola/", logo:"", emoji:"⚽", color:"#7FD8FF" },
+  { id:"cuota-mortal", nombre:"Cuota Mortal", descripcion:"Casino cooperativo con amigos y una deuda con la mafia.",
+    link:"https://TU-USUARIO.github.io/cuota-mortal/", logo:"", emoji:"🎰", color:"#FF8FA9" },
+  { id:"pixel-adventure", nombre:"Pixel Adventure", descripcion:"Plataformas 2D con frutas, trampas y enemigos.",
+    link:"https://TU-USUARIO.github.io/pixel-adventure/", logo:"", emoji:"🍎", color:"#B9F27C" },
+  { id:"yugioh", nombre:"Juego de Yu-Gi-Oh", descripcion:"Duelos de cartas.",
+    link:"https://TU-USUARIO.github.io/yugioh/", logo:"", emoji:"🃏", color:"#FFD36E" },
+  { id:"play-store", nombre:"Juego Play Store", descripcion:"El juego del proyecto con Ian.",
+    link:"https://TU-USUARIO.github.io/juego-play-store/", logo:"", emoji:"📱", color:"#C9B6FF" }
+];
+
+/* =====================================================================
+   2) COMENTARIOS COMPARTIDOS (opcional pero recomendado)
+   Para que todos vean los comentarios de todos hace falta una base de datos.
+   Con Supabase (gratis):
+     a) Creá un proyecto en supabase.com
+     b) En SQL Editor ejecutá:
+
+        create table comentarios (
+          id bigint generated always as identity primary key,
+          created_at timestamptz default now(),
+          juego text not null,
+          nombre text,
+          estrellas int not null check (estrellas between 1 and 5),
+          texto text not null check (char_length(texto) <= 600)
+        );
+        alter table comentarios enable row level security;
+        create policy "leer" on comentarios for select using (true);
+        create policy "escribir" on comentarios for insert with check (true);
+
+     c) En Project Settings > API copiá la "Project URL" y la clave "anon public"
+        y pegalas acá abajo.
+   Si dejás esto vacío, los comentarios se guardan solo en el navegador de cada persona.
+   ===================================================================== */
+const SUPABASE_URL = "";
+const SUPABASE_ANON_KEY = "";
+
+/* ===================================================================== */
+
+const $ = id => document.getElementById(id);
+const usaNube = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+let comentarios = [];
+let estrellasElegidas = 0;
+
+/* ---------- Almacenamiento seguro ---------- */
+function leerLS(clave, defecto){
+  try{ const v = localStorage.getItem(clave); return v ? JSON.parse(v) : defecto; }
+  catch(e){ return defecto; }
+}
+function guardarLS(clave, valor){
+  try{ localStorage.setItem(clave, JSON.stringify(valor)); }catch(e){}
+}
+
+/* ---------- Datos ---------- */
+async function cargarComentarios(){
+  if(usaNube){
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/comentarios?select=*&order=created_at.desc&limit=300`, {
+      headers:{ apikey:SUPABASE_ANON_KEY, Authorization:`Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    if(!r.ok) throw new Error("No se pudieron cargar los comentarios");
+    return await r.json();
+  }
+  return leerLS("sala_comentarios", []);
+}
+async function guardarComentario(c){
+  if(usaNube){
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/comentarios`, {
+      method:"POST",
+      headers:{
+        apikey:SUPABASE_ANON_KEY, Authorization:`Bearer ${SUPABASE_ANON_KEY}`,
+        "Content-Type":"application/json", Prefer:"return=minimal"
+      },
+      body:JSON.stringify(c)
+    });
+    if(!r.ok) throw new Error("No se pudo publicar");
+    return;
+  }
+  const lista = leerLS("sala_comentarios", []);
+  lista.unshift({ ...c, created_at:new Date().toISOString() });
+  guardarLS("sala_comentarios", lista.slice(0,300));
+}
+
+/* ---------- Utilidades ---------- */
+function nombreJuego(id){
+  const j = JUEGOS.find(x => x.id === id);
+  return j ? j.nombre : id;
+}
+function promedioDe(id){
+  const l = comentarios.filter(c => c.juego === id);
+  if(!l.length) return null;
+  return { media:l.reduce((a,c)=>a+c.estrellas,0)/l.length, n:l.length };
+}
+function fechaCorta(iso){
+  const d = new Date(iso);
+  return isNaN(d) ? "" : d.toLocaleDateString("es-AR",{day:"numeric",month:"short",year:"numeric"});
+}
+
+/* ---------- Tarjetas de juegos ---------- */
+function dibujarJuegos(){
+  const grilla = $("grilla");
+  grilla.textContent = "";
+  JUEGOS.forEach(j => {
+    const a = document.createElement("a");
+    a.className = "cartucho";
+    a.href = j.link;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.setAttribute("aria-label", `Jugar a ${j.nombre}`);
+    a.addEventListener("click", () => {
+      guardarLS("sala_ultimo_juego", j.id);
+    });
+
+    const pantalla = document.createElement("div");
+    pantalla.className = "pantalla";
+    pantalla.style.background = j.color;
+    if(j.logo){
+      const img = document.createElement("img");
+      img.src = j.logo; img.alt = "";
+      img.onerror = () => { img.remove(); pantalla.append(j.emoji); };
+      pantalla.appendChild(img);
+    }else{
+      pantalla.append(j.emoji);
+    }
+    const ranura = document.createElement("span");
+    ranura.className = "ranura";
+    pantalla.appendChild(ranura);
+
+    const cuerpo = document.createElement("div");
+    cuerpo.className = "cuerpo";
+    const h2 = document.createElement("h2"); h2.textContent = j.nombre;
+    const p = document.createElement("p"); p.textContent = j.descripcion;
+    const nota = document.createElement("div"); nota.className = "nota";
+    const prom = document.createElement("span"); prom.className = "promedio";
+    const pr = promedioDe(j.id);
+    if(pr){
+      const b = document.createElement("b"); b.textContent = "★";
+      prom.append(b, ` ${pr.media.toFixed(1)} (${pr.n})`);
+    }else{
+      prom.textContent = "Sin opiniones";
+    }
+    const jugar = document.createElement("span"); jugar.className = "jugar"; jugar.textContent = "Jugar";
+    nota.append(prom, jugar);
+
+    cuerpo.append(h2, p, nota);
+    a.append(pantalla, cuerpo);
+    grilla.appendChild(a);
+  });
+}
+
+/* ---------- Formulario ---------- */
+function llenarSelectores(){
+  const sel = $("selJuego"), fil = $("selFiltro");
+  sel.textContent = ""; fil.textContent = "";
+  JUEGOS.forEach(j => {
+    sel.add(new Option(j.nombre, j.id));
+    fil.add(new Option(j.nombre, j.id));
+  });
+  fil.add(new Option("Todos los juegos", "todos"), 0);
+  fil.value = "todos";
+
+  const ultimo = leerLS("sala_ultimo_juego", null);
+  if(ultimo && JUEGOS.some(j => j.id === ultimo)){
+    sel.value = ultimo;
+  }
+}
+
+function dibujarEstrellas(){
+  const cont = $("estrellas");
+  cont.textContent = "";
+  for(let i = 1; i <= 5; i++){
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = "★";
+    b.setAttribute("role","radio");
+    b.setAttribute("aria-label", `${i} ${i === 1 ? "estrella" : "estrellas"}`);
+    b.setAttribute("aria-checked", String(i === estrellasElegidas));
+    if(i <= estrellasElegidas) b.classList.add("on");
+    b.addEventListener("click", () => { estrellasElegidas = i; dibujarEstrellas(); });
+    cont.appendChild(b);
+  }
+}
+
+function aviso(msg, tipo){
+  const el = $("aviso");
+  el.textContent = msg;
+  el.className = "aviso" + (tipo ? " " + tipo : "");
+}
+
+async function publicar(){
+  const juego = $("selJuego").value;
+  const texto = $("texto").value.trim();
+  const nombre = $("nombre").value.trim().slice(0,40) || "Anónimo";
+
+  if(!estrellasElegidas){ aviso("Elegí cuántas estrellas le das.", "mal"); return; }
+  if(texto.length < 3){ aviso("Escribí un comentario, aunque sea corto.", "mal"); return; }
+
+  const ultimo = leerLS("sala_ultimo_envio", 0);
+  if(Date.now() - ultimo < 15000){ aviso("Esperá unos segundos antes de publicar otra opinión.", "mal"); return; }
+
+  const btn = $("btnEnviar");
+  btn.disabled = true;
+  try{
+    await guardarComentario({ juego, nombre, estrellas:estrellasElegidas, texto:texto.slice(0,600) });
+    guardarLS("sala_ultimo_envio", Date.now());
+    $("texto").value = "";
+    estrellasElegidas = 0;
+    dibujarEstrellas();
+    aviso("Listo, tu opinión ya está publicada.", "ok");
+    comentarios = await cargarComentarios();
+    $("selFiltro").value = juego;
+    dibujarJuegos();
+    dibujarLista();
+  }catch(e){
+    aviso("No se pudo publicar. Revisá tu conexión e intentá de nuevo.", "mal");
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ---------- Lista ---------- */
+function dibujarLista(){
+  const filtro = $("selFiltro").value;
+  const lista = $("lista");
+  lista.textContent = "";
+  const visibles = comentarios.filter(c => filtro === "todos" || c.juego === filtro);
+
+  const resumen = $("resumen");
+  if(visibles.length){
+    const media = visibles.reduce((a,c)=>a+c.estrellas,0)/visibles.length;
+    resumen.textContent = `${visibles.length} ${visibles.length === 1 ? "opinión" : "opiniones"}, promedio ${media.toFixed(1)} de 5`;
+  }else{
+    resumen.textContent = "";
+  }
+
+  if(!visibles.length){
+    const v = document.createElement("div");
+    v.className = "vacio";
+    v.textContent = "Todavía nadie opinó sobre este juego. Podés ser el primero.";
+    lista.appendChild(v);
+    return;
+  }
+
+  visibles.forEach(c => {
+    const box = document.createElement("article");
+    box.className = "comentario";
+
+    const cab = document.createElement("div");
+    cab.className = "cab";
+    const izq = document.createElement("span");
+    const quien = document.createElement("b");
+    quien.textContent = c.nombre || "Anónimo";
+    const juego = document.createElement("span");
+    juego.className = "juego";
+    juego.textContent = ` en ${nombreJuego(c.juego)}`;
+    izq.append(quien, juego);
+
+    const der = document.createElement("span");
+    const est = document.createElement("span");
+    est.className = "est";
+    est.textContent = "★".repeat(c.estrellas) + "☆".repeat(5 - c.estrellas);
+    est.setAttribute("aria-label", `${c.estrellas} de 5 estrellas`);
+    der.append(est, ` ${fechaCorta(c.created_at)}`);
+
+    cab.append(izq, der);
+    const p = document.createElement("p");
+    p.textContent = c.texto;
+    box.append(cab, p);
+    lista.appendChild(box);
+  });
+}
+
+/* ---------- Inicio ---------- */
+async function iniciar(){
+  $("modoLocal").hidden = usaNube;
+  llenarSelectores();
+  dibujarEstrellas();
+  $("btnEnviar").addEventListener("click", publicar);
+  $("selFiltro").addEventListener("change", dibujarLista);
+
+  try{
+    comentarios = await cargarComentarios();
+  }catch(e){
+    comentarios = [];
+    aviso("No se pudieron cargar los comentarios guardados.", "mal");
+  }
+  dibujarJuegos();
+  dibujarLista();
+
+  /* Al volver de un juego, llevar directo a la sección de opiniones */
+  document.addEventListener("visibilitychange", () => {
+    if(document.visibilityState === "visible"){
+      const ultimo = leerLS("sala_ultimo_juego", null);
+      if(ultimo && JUEGOS.some(j => j.id === ultimo)) $("selJuego").value = ultimo;
+    }
+  });
+}
+iniciar();
+</script>
+</body>
+</html>
